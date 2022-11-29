@@ -1,0 +1,59 @@
+﻿@using PagedList.Mvc;
+@using PagedList;
+
+@model IPagedList<SearchPagingSorting.Models.Employee>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<p>
+    @using (Html.BeginForm("Index", "Home", FormMethod.Get))
+    {
+    <p>Search by</p>
+    @Html.RadioButton("searchBy", "Name") <text>Name</text>
+    @Html.RadioButton("searchBy", "Gender") <text>Gender</text>
+    <br />
+    @Html.TextBox("search")
+    <input type="submit" value="search" />
+}
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.ActionLink("Name","Index", new { sortby = ViewBag.Nameofsort, searchBy = Request["searchBy"], search = Request["search"] } )
+            </th>
+            <th>
+                @Html.ActionLink("Gender", "Index", new { sortBy = ViewBag.Gendersort, searchBy = Request["searchBy"], search = Request["search"] })
+           </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Email)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Gender)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                </td>
+            </tr>
+        }
+
+    </table>
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchBy = Request.QueryString["searchBy"], search = Request.QueryString["search"], sortby = Request["sortby"] }))
